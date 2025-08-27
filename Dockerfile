@@ -6,7 +6,10 @@ COPY tsconfig.json ./
 COPY tsup.config.ts ./
 COPY src ./src
 COPY schemas ./schemas
-RUN npm run build
+# Cache-busting arg (set via --build-arg BUILD_ID) to force rebuild when needed
+ARG BUILD_ID=dev
+ENV BUILD_ID=${BUILD_ID}
+RUN echo "Building with BUILD_ID=$BUILD_ID" && npm run build
 
 FROM node:20-slim AS runtime
 WORKDIR /app
