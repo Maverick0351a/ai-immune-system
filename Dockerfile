@@ -18,6 +18,7 @@ RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x entrypoint.sh
+COPY --from=builder /app/schemas ./schemas
 # Optional schema file (embedded already) for reference
 COPY src/db/schema.sql ./dist/db/schema.sql
 EXPOSE 8088
