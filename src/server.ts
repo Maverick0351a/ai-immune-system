@@ -14,19 +14,7 @@ import { stripeWebhookRoute } from './routes/stripe.js';
 import dotenv from "dotenv";
 
 dotenv.config();
-const log = pino({
-	name: "ais",
-	// Cast redact options to any because @types/pino does not yet allow array path entries
-	redact: ({
-		paths: [
-			'req.headers.authorization',
-			['req','headers','x-api-key'],
-			['req','headers','x-admin-token'],
-			'req.headers.cookie'
-		],
-		censor: '[REDACTED]'
-	} as any)
-});
+const log = pino({ name: "ais" }); // Headers stripped via pino-http serializer below
 
 // Lazy read package version for health reporting
 let PKG_VERSION = "0.0.0";
