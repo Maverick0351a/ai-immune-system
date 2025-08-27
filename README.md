@@ -233,6 +233,28 @@ Failure modes: `REJECT`, `QUARANTINE`, or `ERROR` if unrecoverable.
 
 ---
 
+## Deployment (Fly.io Example)
+
+Minimal steps:
+1. Install Fly CLI: `curl -L https://fly.io/install.sh | sh`
+2. `fly launch --no-deploy` (accept existing fly.toml)
+3. Create volume: `fly volumes create data --size 1 --region iad`
+4. Set secrets:
+  - `fly secrets set OPENAI_API_KEY=... STRIPE_API_KEY=... STRIPE_METERED_PRICE_ID=... ADMIN_TOKEN=... TEST_API_KEY=demokey-123`
+5. Deploy: `fly deploy`
+
+fly.toml sets `DATABASE_URL=file:/data/ais.db` and mounts the volume at /data. SQLite runs in WAL mode; single instance recommended initially. Scale later after migrating to a network database.
+
+Prometheus metrics exposed at `/metrics`; health at `/healthz`.
+
+Hardening checklist:
+- Rotate ADMIN_TOKEN regularly.
+- Restrict inbound with Fly IP allow lists or an auth proxy if multi-tenant external exposure.
+- Migrate rate limiting + cache to Redis/Turso if scaling >1 instance.
+- Add HTTPS-only forward policies with POLICY_PROFILE=rego.
+
+---
+
 ## Contributing
 
 PRs welcome. For major extensions (new policy engines, billing providers) open an issue first. Keep security-impacting diffs tight & well documented.

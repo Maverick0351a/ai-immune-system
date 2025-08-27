@@ -12,6 +12,11 @@ export function openDb(url: string) {
   const dir = path.dirname(file);
   fs.mkdirSync(dir, { recursive: true });
   const db = new Database(file);
+  try {
+    db.pragma('journal_mode = WAL');
+    db.pragma('synchronous = NORMAL');
+    db.pragma('foreign_keys = ON');
+  } catch { /* ignore */ }
   return db;
 }
 

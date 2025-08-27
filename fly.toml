@@ -10,6 +10,7 @@ kill_timeout = "5s"
 [env]
   PORT = "8088"
   NODE_ENV = "production"
+  DATABASE_URL = "file:/data/ais.db"
 
 [[services]]
   internal_port = 8088
@@ -48,3 +49,7 @@ kill_timeout = "5s"
     grace_period = "10s"
     method = "get"
     path = "/healthz"
+
+[[mounts]]
+  source = "data"
+  destination = "/data"
