@@ -18,11 +18,17 @@ export default defineConfig({
     'src/stages/llm_fallback.ts',
     'src/utils/canonical.ts'
   ],
+  platform: 'node',
+  target: 'node18',
   sourcemap: false,
-  splitting: true,
+  splitting: false, // avoid chunk wrappers that caused dynamic require issues on Fly
   clean: true,
-  format: ['esm','cjs'],
+  format: ['cjs'], // single CJS output for runtime simplicity
   dts: false,
-  external: ['better-sqlite3'],
+  external: [
+    'better-sqlite3',
+    'express',
+    'body-parser'
+  ],
   // We rely on fs to read schema.sql; keep it in src and copy manually via Docker layer.
 });
