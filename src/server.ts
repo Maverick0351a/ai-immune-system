@@ -70,4 +70,21 @@ app.use("/v1/admin", adminRoutes(db));
 app.use('/v1/stripe', stripeWebhookRoute());
 
 const port = Number(process.env.PORT || 8088);
-app.listen(port, () => log.info({ port }, "AI Immune System listening"));
+const server = app.listen(port, () => log.info({ port }, "AI Immune System listening"));
+
+function shutdown(sig: string) {
+	log.info({ sig }, 'shutdown signal received');
+	server.close(err => {
+		if (err) {
+			log.error({ err }, 'error during shutdown');
+			process.exit(1);
+		}
+		log.info('server closed');
+		process.exit(0);
+	});
+	setTimeout(() => {
+		log.warn('forced exit after timeout');
+		process.exit(1);
+	}, 5000).unref();
+}
+['SIGINT','SIGTERM'].forEach(s => process.on(s as NodeJS.Signals, () => shutdown(s)));

@@ -1,0 +1,50 @@
+# Fly.io app configuration for AI Immune System
+app = "ai-immune-system"
+primary_region = "iad"
+kill_signal = "SIGINT"
+kill_timeout = "5s"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8088"
+  NODE_ENV = "production"
+
+[[services]]
+  internal_port = 8088
+  processes = ["app"]
+  protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 50
+    soft_limit = 40
+    type = "requests"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.http_checks]]
+    interval = "30s"
+    grace_period = "10s"
+    method = "get"
+    path = "/healthz"
+    protocol = "http"
+    timeout = "2s"
+
+[metrics]
+  port = 8088
+  path = "/metrics"
+
+[checks]
+  [checks.healthz]
+    type = "http"
+    interval = "30s"
+    timeout = "3s"
+    grace_period = "10s"
+    method = "get"
+    path = "/healthz"
