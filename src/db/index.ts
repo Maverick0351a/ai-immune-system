@@ -57,6 +57,8 @@ export function initDb(db: Database.Database) {
     if (fs.existsSync(schemaPath)) schema = fs.readFileSync(schemaPath, 'utf-8');
   } catch { /* ignore */ }
   db.exec(schema);
+  // migrations table
+  db.exec("create table if not exists migrations (id integer primary key autoincrement, name text not null unique, applied_at text not null)");
   // seed single tenant for dev
   if (process.env.TEST_API_KEY) {
     const exists = db.prepare("select id from tenants where api_key=?").get(process.env.TEST_API_KEY);
@@ -65,6 +67,17 @@ export function initDb(db: Database.Database) {
         nanoid(), "dev", process.env.TEST_API_KEY, JSON.stringify(["localhost","127.0.0.1"]), JSON.stringify(["auth.token","secret","credentials.*"]), null
       );
     }
+  }
+}
+
+export function applyMigrations(db: Database.Database, migrations: Array<{ name: string; up: (db: Database.Database) => void }>) {
+  const existing = new Set<string>((db.prepare('select name from migrations').all() as Array<{ name: string }>).map(r => r.name));
+  for (const m of migrations) {
+    if (existing.has(m.name)) continue;
+    db.transaction(() => {
+      m.up(db);
+      db.prepare('insert into migrations(name, applied_at) values(?, ?)').run(m.name, new Date().toISOString());
+    })();
   }
 }
 

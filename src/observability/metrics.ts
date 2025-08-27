@@ -14,6 +14,10 @@ export const llmFallbackCounter = new client.Counter({
   name: 'llm_fallback_total',
   help: 'Total LLM fallback repairs'
 });
+export const rateLimitCounter = new client.Counter({
+  name: 'rate_limited_requests_total',
+  help: 'Total requests rejected due to rate limiting'
+});
 
 export const repairTimeHistogram = new client.Histogram({
   name: 'repair_duration_seconds',
@@ -25,6 +29,7 @@ export const repairTimeHistogram = new client.Histogram({
 registry.registerMetric(requestCounter);
 registry.registerMetric(llmFallbackCounter);
 registry.registerMetric(repairTimeHistogram);
+registry.registerMetric(rateLimitCounter);
 
 export function observeDiagnostics(diags: Array<{ step: string; ms?: number }>) {
   for (const d of diags) {

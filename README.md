@@ -252,6 +252,11 @@ Hardening checklist:
 - Restrict inbound with Fly IP allow lists or an auth proxy if multi-tenant external exposure.
 - Migrate rate limiting + cache to Redis/Turso if scaling >1 instance.
 - Add HTTPS-only forward policies with POLICY_PROFILE=rego.
+- Enable off-site backups: e.g. schedule `fly ssh console` + `sqlite3 /data/ais.db .backup /data/backup/ais-$(date +%F).db` and sync to object storage (Litestream or LiteFS for continuous replication when ready).
+
+Metrics additions:
+- `rate_limited_requests_total` for 429 monitoring.
+- Existing `requests_total`, `llm_fallback_total`, `repair_duration_seconds`.
 
 ---
 

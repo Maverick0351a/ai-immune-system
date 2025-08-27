@@ -4,8 +4,9 @@ import helmet from "helmet";
 import pino from "pino";
 import pinoHttp from "pino-http";
 import bodyParser from "body-parser";
-import { registry } from "./observability/metrics.js";
+import { registry, rateLimitCounter } from "./observability/metrics.js";
 import { openDb, initDb } from "./db/index.js";
+import { runMigrations } from './db/migrations.js';
 import { immuneRoutes } from "./routes/immune.js";
 import { adminRoutes } from "./routes/admin.js";
 import { UsageMeter } from "./billing/stripe.js";
@@ -42,7 +43,8 @@ app.use((req,res,next) => {
 		res.setHeader('X-RateLimit-Limit', String(rlMax));
 		res.setHeader('X-RateLimit-Remaining', String(Math.max(0, rlMax - entry.count)));
 		res.setHeader('X-RateLimit-Reset', String(Math.floor(entry.reset/1000)));
-		if (entry.count > rlMax) {
+			if (entry.count > rlMax) {
+				rateLimitCounter.inc();
 			res.setHeader('Retry-After', Math.ceil((entry.reset-now)/1000));
 			return res.status(429).json({ error: 'rate_limited', window_ms: rlWindowMs });
 		}
@@ -52,6 +54,7 @@ app.use((req,res,next) => {
 const dbUrl = process.env.DATABASE_URL || "file:./data/ais.db";
 const db = openDb(dbUrl);
 initDb(db);
+runMigrations(db);
 
 const meter = new UsageMeter(db);
 
