@@ -7,9 +7,10 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "strict": true,
+    "rootDir": "src",
     "outDir": "dist",
     "resolveJsonModule": true,
-  "types": ["node", "vitest"]
+    "types": ["node", "vitest"]
   },
   "include": ["src", "schemas"]
 }
