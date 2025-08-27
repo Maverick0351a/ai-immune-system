@@ -1,0 +1,35 @@
+name: Publish Python Client
+
+on:
+  push:
+    tags:
+      - 'py-v*'
+  workflow_dispatch:
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install build tooling
+        run: |
+          pip install --upgrade pip
+          pip install build twine
+      - name: Build
+        working-directory: python
+        run: python -m build
+      - name: Publish
+        if: startsWith(github.ref, 'refs/tags/py-v')
+        working-directory: python
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          twine upload dist/*

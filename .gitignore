@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+data/
+*.log
+# Python artifacts
+python/dist/
+python/build/
+python/*.egg-info/
+__pycache__/
+*.pyc
+

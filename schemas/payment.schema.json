@@ -1,0 +1,11 @@
+{
+  "title": "Payment",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "amount": { "type": "number", "minimum": 0, "maximum": 1000000 },
+    "currency": { "type": "string", "enum": ["USD", "EUR", "GBP"] },
+    "timestamp": { "type": "string", "format": "date-time", "within24h": true }
+  },
+  "required": ["amount", "currency", "timestamp"]
+}

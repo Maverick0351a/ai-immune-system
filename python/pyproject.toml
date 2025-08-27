@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ais-client"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python client for AI Immune System (AIS): JSON firewall + guarded LLM fallback."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -14,7 +14,6 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.9",
-  "License :: OSI Approved :: Apache Software License",
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Internet :: WWW/HTTP"
@@ -30,5 +29,5 @@ Repository = "https://github.com/Maverick0351a/ai-immune-system"
 Issues = "https://github.com/Maverick0351a/ai-immune-system/issues"
 
 [tool.setuptools.packages.find]
-where = ["python"]
+where = ["."]
 include = ["ais_client*"]
