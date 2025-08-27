@@ -1,5 +1,5 @@
 <!-- Hero -->
-# AI Immune System (AIS) <img alt="plus" width="20" height="20" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2316a34a'><path d='M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z'/></svg>' />
+# AI Immune System (AIS) <img alt="plus" width="18" height="18" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2316a34a'%3E%3Cpath d='M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z'/%3E%3C/svg%3E" />
 
 <p align="center">
 <strong>Drop‑in JSON firewall for AI & partner data pipelines</strong><br/>
