@@ -13,7 +13,7 @@ export const RequestSchema = z.object({
   schema: z.any().nullable().optional(),
   json: z.union([z.string(), z.record(z.any())]),
   options: OptionsSchema.optional(),
-  forward_url: z.string().url().optional()
+  forward_url: z.string().url().refine(u => u.startsWith('http://') || u.startsWith('https://'), 'must be http(s) URL').optional()
 });
 
 export type ImmuneRequest = z.infer<typeof RequestSchema>;

@@ -15,6 +15,12 @@ import dotenv from "dotenv";
 dotenv.config();
 const log = pino({ name: "ais", redact: { paths: ['req.headers.authorization','req.headers.x-api-key','req.headers.x-admin-token','req.headers.cookie'], censor: '[REDACTED]' } });
 
+// Lazy read package version for health reporting
+let PKG_VERSION = "0.0.0";
+try {
+	PKG_VERSION = (await import('../package.json', { assert: { type: 'json' } }) as any).default.version || '0.0.0';
+} catch { /* ignore */ }
+
 const app = express();
 app.use(pinoHttp({ logger: log, serializers: { req(req) { return { id: (req as any).id, method: req.method, url: req.url }; } } }));
 app.use(helmet());
@@ -28,7 +34,7 @@ initDb(db);
 
 const meter = new UsageMeter(dbUrl.startsWith("file:") ? dbUrl.slice(5) : dbUrl);
 
-app.get("/healthz", (req, res) => res.json({ ok: true, version: "0.1.0" }));
+app.get("/healthz", (req, res) => res.json({ ok: true, version: PKG_VERSION }));
 app.get('/metrics', async (req, res) => {
 	try {
 		res.setHeader('Content-Type', registry.contentType);

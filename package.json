@@ -1,6 +1,6 @@
 {
   "name": "ai-immune-system",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "AI Immune System — robust JSON firewall with repair, schema validation, LLM fallback (metered), provenance, and Stripe metering.",
   "license": "Apache-2.0",

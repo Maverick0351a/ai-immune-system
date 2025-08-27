@@ -28,6 +28,7 @@ export function immuneRoutes(db: Database.Database, meter: UsageMeter) {
     const mergedOptions = {
       coerce: options?.coerce !== false,
       dropUnknown: options?.dropUnknown !== false,
+      disableLLM: options?.disableLLM === true,
       redactPaths: Array.from(new Set([...(options?.redactPaths||[]), ...tenantRedact]))
     };
     const s = typeof json === "string" ? json : JSON.stringify(json);

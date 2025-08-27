@@ -1,19 +1,9 @@
+<!-- Hero -->
 # AI Immune System (AIS) 🛡️
 
 <p align="center">
-<<<<<<< HEAD
-<strong>Production firewall & hygiene layer for AI JSON.</strong><br/>
-Stop shipping brittle parsing glue. AIS turns noisy / malformed / risky model JSON into clean, validated, policy‑compliant objects — and only bills when an LLM rescue is actually needed.
-</p>
-
-<p align="center">
-<a href="https://www.odinsecure.ai" target="_blank">Website</a> ·
-<a href="#features">Features</a> ·
-# AI Immune System (AIS) 🛡️
-
-<p align="center">
-<strong>A drop-in JSON firewall for AI & partner data</strong><br/>
-Deterministic repair → schema validation → guarded LLM fallback (metered) → re‑validate; with provenance, policy, redaction, metrics & Stripe usage billing.
+<strong>Drop‑in JSON firewall for AI & partner data pipelines</strong><br/>
+Turns noisy / malformed / risky JSON into clean, validated, policy‑compliant, metered objects — only bills when an LLM rescue is truly needed.
 </p>
 
 <p align="center">
@@ -26,93 +16,110 @@ Deterministic repair → schema validation → guarded LLM fallback (metered) �
 </p>
 
 <p align="center">
-  <a href="#quick-use"><img alt="Quick Use" src="https://img.shields.io/badge/Quick%20Use-cURL%20%7C%20Python-ff9800?logo=lightning" /></a>
-  <a href="#api"><img alt="API" src="https://img.shields.io/badge/Docs-API-green?logo=markdown" /></a>
+  <a href="#try-in-60s"><img alt="Quick Start" src="https://img.shields.io/badge/Try%20It-60s-ff5722?logo=thunderbird" /></a>
+  <a href="#quick-use"><img alt="Quick Use" src="https://img.shields.io/badge/Snippets-cURL%20%7C%20Python%20%7C%20TS-ff9800?logo=code" /></a>
+  <a href="#api"><img alt="API" src="https://img.shields.io/badge/Docs-API-4caf50?logo=markdown" /></a>
+  <a href="#architecture"><img alt="Arch" src="https://img.shields.io/badge/Diagram-Architecture-673ab7" /></a>
 </p>
 
-## About
+---
 
-AI Immune System (AIS) sits in front of your application and makes untrusted JSON safe & billable:
+## About (Immune System Analogy)
 
-Why it exists:
-- LLM outputs are messy; deterministic repair first keeps costs near-zero.
-- Guardrails (schema + policy + redaction) shrink attack surface before any model call.
-- Provenance (CIDs + optional ODIN signatures) enables audit & tamper detection.
-- Per-fallback metering + Stripe ties cost directly to actual LLM usage, not tokens.
+Think of every incoming JSON blob (from an LLM, partner feed, or user) as a “cell” entering your system.
 
-Core guarantees:
-- Never returns non-JSON.
-- LLM fallback only after validation failure & with temp=0 + JSON-only response_format.
-- Sensitive fields redacted before model exposure.
-- Billing only increments on successful LLM repairs.
+AIS behaves like a lightweight immune system:
 
-Use cases:
-- Gate partner ingestion pipelines.
-- Offer “clean JSON” API to downstream teams.
-- Track & monetize reliability bandaids for upstream flaky sources.
+| Immune Concept | AIS Step | Purpose (Plain Language) |
+|----------------|---------|---------------------------|
+| Innate barrier | Fast parse + deterministic repair | Instantly fix obvious cuts & scrapes (typos, stray commas) for free. |
+| Pattern check (PAMPs) | JSON Schema validation | Reject shapes that don’t belong before they spread. |
+| Redaction (masking) | Sensitive field stripping | Hide secrets before deeper inspection so they never leak. |
+| Adaptive response | Guarded LLM fallback | Only call the “specialist” (LLM) if the quick defenses failed. |
+| Antibodies | Re‑validation of LLM output | Ensure the specialist’s result really fits the schema. |
+| Quarantine | REJECT / QUARANTINE decision | Isolate stuff that cannot be safely repaired. |
+| Immune memory | Canonical hash + provenance | Remember exactly what was seen & how it was fixed. |
+| Vital signs | Metrics & logs | Observe health: how many infections (repairs), how many escalations (LLM). |
+| Energy budget | Metered billing per fallback | You only “spend calories” when adaptive response triggers. |
 
-Tags: json, firewall, llm, guardrails, openai, stripe, billing, observability, opa, rego, security, validation, json-schema, metering, nodejs, typescript
+Plain version: AIS quietly fixes most broken JSON instantly. Only when that fails does it (optionally) escalate to an LLM under strict rules and then double‑checks the result. You get clean, safe objects or a clear, contained rejection — plus a receipt of what happened.
 
-> Free deterministic fixes; pay only **per LLM fallback** (beyond free tier).
+Why this matters:
+- Prevents ad‑hoc regex & scattered validation drift.
+- Cuts LLM spend by handling the easy 80–90% deterministically.
+- Reduces risk: sensitive data is removed before model calls.
+- Gives you audit trails & usage-based cost alignment.
+
+You pay (metered) only when the adaptive layer (LLM fallback) actually succeeds and returns value.
 
 ---
 
-## ✨ What you get
+## ✨ Feature Highlights
 
-- **4-stage pipeline**: autocorrect → JSON repair → **LLM fallback** (optional) → JSON re-validate.
-- **Schema-first**: JSON Schema / Zod validation, coercions, formats, ranges.
-- **Security filters**: secret/PII scan, prompt-injection residue scrub, redaction.
-- **Deterministic first**: most inputs fixed without AI (free).
-- **Fallback with guardrails**: schema-constrained LLM prompt; temp=0; JSON-only.
-- **Provenance**: canonical JSON + CID (`sha256:<hex>`), trace IDs, optional ODIN receipts.
-- **Metered billing**: Stripe-ready usage reporting **per LLM fallback**; free tier included.
-- **Tenants & API keys**: SQLite dev DB, simple admin endpoints.
-- **DX-first**: cURLable API + TypeScript library + CLI (`ais`).
+<details open>
+<summary><strong>Pipeline</strong></summary>
+
+1. Parse & deterministic repair (jsonrepair)
+2. Schema validate (JSON Schema 2020-12 + custom keywords)
+3. Conditional LLM fallback (guarded: temp=0, JSON-only, redacted)
+4. Re‑validate & provenance stamp (CID / optional signature)
+</details>
+
+<details>
+<summary><strong>Security & Policy</strong></summary>
+Field & wildcard redaction, host allow‑lists via Rego/OPA, prompt residue scrubbing, signature-ready provenance.
+</details>
+
+<details>
+<summary><strong>Billing & Quotas</strong></summary>
+Per‑tenant free quota + metered Stripe usage (fallback successes only), overrideable per tenant.
+</details>
+
+<details>
+<summary><strong>Observability</strong></summary>
+Prometheus metrics, structured redacted logs, repair provenance trail.
+</details>
+
+<details>
+<summary><strong>DX</strong></summary>
+CLI (`ais`), Python client (`pip install ais-client`), simple REST endpoints, minimal env surface.
+</details>
 
 ---
 
-## Quick start (local)
+## Try in 60s
 
 ```bash
-git clone <your-repo>.git ai-immune-system
+git clone https://github.com/Maverick0351a/ai-immune-system.git
 cd ai-immune-system
 cp .env.example .env
+echo "TEST_API_KEY=demokey-123" >> .env
 npm i
 npm run init-db
-npm run dev
+npm run dev &
+
+# Deterministic repair (no LLM spend)
+curl -s http://127.0.0.1:8088/v1/immune/run \
+  -H "X-API-Key: demokey-123" -H "Content-Type: application/json" \
+  -d '{"schema":{"type":"object","properties":{"amount":{"type":"number"}},"required":["amount"]},"json":"{amount: \"42\"}"}' | jq
 ```
 
-Open another terminal and test:
-
-```bash
-# Example broken JSON fixed deterministically (no LLM) — FREE
-curl -s http://127.0.0.1:8088/v1/immune/run   -H "X-API-Key: demokey-123"   -H "Content-Type: application/json"   -d '{"schema":{"type":"object","properties":{"amount":{"type":"number"}},"required":["amount"]},"json":"{\"amount\": \"42\"}"}' | jq
-```
-
-LLM fallback example (requires `OPENAI_API_KEY` in `.env`):
-
-```bash
-curl -s http://127.0.0.1:8088/v1/immune/run   -H "X-API-Key: demokey-123"   -H "Content-Type: application/json"   -d '{"schema":{"type":"object","properties":{"invoice_id":{"type":"string"},"amount":{"type":"number"},"currency":{"type":"string"}},"required":["invoice_id","amount","currency"]},"json":"{invoice_id: INV-1, amount: \"123.45\", currency: USD}"}' | jq
-```
+Add an OpenAI key in `.env` to enable fallback: `OPENAI_API_KEY=sk-...`
 
 ---
 
 ## Quick Use
 
-Minimal copy‑paste snippets.
-
-### cURL (deterministic repair)
+### cURL
 ```bash
 curl -s http://127.0.0.1:8088/v1/immune/run \
-  -H "X-API-Key: demokey-123" \
-  -H "Content-Type: application/json" \
+  -H "X-API-Key: demokey-123" -H "Content-Type: application/json" \
   -d '{"schema":{"type":"object","properties":{"amount":{"type":"number"}},"required":["amount"]},"json":"{amount: '42'}"}'
 ```
 
 ### Python
 ```python
 from ais_client import AISClient
-
 client = AISClient(api_key="demokey-123", base_url="http://127.0.0.1:8088")
 res = client.run(
   schema={"type":"object","properties":{"amount":{"type":"number"}},"required":["amount"]},
@@ -131,44 +138,37 @@ const resp = await fetch("http://127.0.0.1:8088/v1/immune/run", {
     json: "{amount: '42'}"
   })
 });
-const out = await resp.json();
-console.log(out.final.amount);
+console.log((await resp.json()).final.amount);
 ```
 
 ---
 
-## Pricing model (Stripe-friendly)
+## Pricing (Stripe-Friendly)
 
-- **Free**: deterministic repairs unlimited; **LLM fallbacks: 25 / month free**.
-- **Pay-as-you-go**: **$0.008 per LLM fallback** beyond free tier (metered billing).
-- **Pro (optional)**: $29 / month includes 1,000 fallbacks, then $0.006 each (configure in Stripe).
+| Tier | Included | Overages (example config) |
+|------|----------|---------------------------|
+| Free | Unlimited deterministic + 25 LLM fallbacks/mo | – |
+| Pay‑as‑you‑go | + On‑demand fallbacks | $0.008 / fallback |
+| Pro (sample) | 1,000 fallbacks / mo | $0.006 thereafter |
 
-This repo ships **usage counters** per tenant and an optional `report-usage` helper that aggregates and pushes usage records to Stripe metered subscriptions. You control pricing & products in Stripe.
+Metering counts only successful LLM repairs after deterministic + schema attempts fail. You own product & price configuration in Stripe.
 
 ---
 
-## API
+## Core API
 
-### `POST /v1/immune/run`
+### POST /v1/immune/run
+Headers: `X-API-Key: <tenant>`, `Content-Type: application/json`
 
-Headers:
-* `X-API-Key: <tenant key>`
-
-Body (core fields):
+Request (minimal):
 ```jsonc
 {
-  "schema": { /* JSON Schema or null */ },
-  "json": "{raw possibly broken json}" ,
-  "options": {
-    "coerce": true,
-    "dropUnknown": true,
-    "redactPaths": ["auth.token", "secret"],
-    "disableLLM": false
-  }
+  "schema": {"type":"object","properties":{"amount":{"type":"number"}},"required":["amount"]},
+  "json": "{amount: '42'}"
 }
 ```
 
-Response (example):
+Example response:
 ```jsonc
 {
   "decision": "ACCEPT_WITH_REPAIRS",
@@ -179,49 +179,63 @@ Response (example):
 }
 ```
 
----
-
-## Pricing
-
-| Tier | Included | Overages |
-|------|----------|----------|
-| Free | Unlimited deterministic fixes + 25 LLM fallbacks/mo | – |
-| Pay‑as‑you‑go | All Free + on‑demand fallbacks | $0.008 / fallback |
-| Pro (example) | 1,000 fallbacks / mo | $0.006 thereafter |
-
-You own the Stripe product & can tune prices. AIS reports cumulative billable fallbacks to your metered subscription items.
+Failure modes: `REJECT`, `QUARANTINE`, or `ERROR` if unrecoverable.
 
 ---
 
-## Integration Overview
+## Environment (Key Variables)
 
-1. Define / reuse JSON Schemas for the structures you expect.
-2. Send raw (possibly broken) JSON + schema to `/v1/immune/run` with your tenant API key.
-3. Use the returned `final` object (or handle a QUARANTINE/REJECT decision).
-4. (Optional) Attach tenant to Stripe for paid tiers; usage auto‑reported.
-
-Advanced (documented in code): per‑tenant redaction, Rego host policy, plan overrides, signed provenance.
-
----
-
-## Architecture (High Level)
-
-Input → Deterministic Parse/Repair → Schema Validate → (Fail?) → Redact → LLM Constrained Repair → Re‑validate → Redact Final → CID/Provenance → Response + (Optional Forward) → Usage Meter.
+| Variable | Purpose |
+|----------|---------|
+| OPENAI_API_KEY | Enables guarded LLM fallback |
+| OPENAI_MODEL / OPENAI_FALLBACK_MODEL | Primary / secondary model IDs |
+| OPENAI_TIMEOUT_MS | Hard timeout for LLM request |
+| LLM_DEBUG | Verbose fallback logging when set (e.g. "1") |
+| STRIPE_API_KEY / STRIPE_METERED_PRICE_ID | Enable usage metering to Stripe |
+| FREE_TIER_FALLBACKS | Override global free fallback quota |
+| ADMIN_TOKEN | Protects admin endpoints |
+| TEST_API_KEY | Seed tenant key during init |
 
 ---
 
-## Roadmap (Public Cut)
+## Architecture
 
-* Tiered pricing helper scripts
-* Webhook-driven subscription state sync
-* Pluggable local model fallback mode
-* Secrets classification library adapters
+```
+          Incoming JSON / Partner Feed / LLM Output
+                            │
+                  Parse + Deterministic Repair
+                            │ (fast, free)
+                      JSON Schema Validate
+                      │           │
+                      │ success   │ fail
+                      │           ▼
+                      │     Redact Sensitive Fields
+                      │           │
+                      │      Guarded LLM Fallback (temp=0, JSON-only)
+                      │           │
+                      └───────────┴─► Re-Validate
+                                      │
+                                Provenance (CID + optional signature)
+                                      │
+                              Usage Meter (if LLM used)
+                                      │
+                                   Response
+```
+
+---
+
+## Roadmap (Public)
+
+- Tiered pricing helper scripts
+- Webhook-driven subscription state sync
+- Optional local model fallback mode
+- Extended secret classification plugins
 
 ---
 
 ## Contributing
 
-Issues & PRs welcome. Please keep security‑relevant changes small & well‑described. For major extensions (new policy engines, billing systems) open an issue first.
+PRs welcome. For major extensions (new policy engines, billing providers) open an issue first. Keep security-impacting diffs tight & well documented.
 
 ---
 
