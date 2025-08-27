@@ -5,6 +5,7 @@ RUN npm ci
 COPY tsconfig.json ./
 COPY tsup.config.ts ./
 COPY src ./src
+COPY schemas ./schemas
 RUN npm run build
 
 FROM node:20-slim AS runtime
