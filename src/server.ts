@@ -16,15 +16,16 @@ import dotenv from "dotenv";
 dotenv.config();
 const log = pino({
 	name: "ais",
-	redact: {
+	// Cast redact options to any because @types/pino does not yet allow array path entries
+	redact: ({
 		paths: [
 			'req.headers.authorization',
-			'req.headers["x-api-key"]',
-			'req.headers["x-admin-token"]',
+			['req','headers','x-api-key'],
+			['req','headers','x-admin-token'],
 			'req.headers.cookie'
 		],
 		censor: '[REDACTED]'
-	}
+	} as any)
 });
 
 // Lazy read package version for health reporting
