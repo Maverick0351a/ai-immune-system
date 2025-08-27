@@ -10,7 +10,6 @@ kill_timeout = "5s"
 [env]
   PORT = "8088"
   NODE_ENV = "production"
-  DATABASE_URL = "file:/data/ais.db"
 
 [[services]]
   internal_port = 8088
