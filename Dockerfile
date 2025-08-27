@@ -3,7 +3,6 @@ WORKDIR /app
 COPY package.json package-lock.json* pnpm-lock.yaml* .npmrc* ./
 RUN npm ci
 COPY tsconfig.json ./
-COPY tsup.config.ts ./
 COPY src ./src
 COPY schemas ./schemas
 # Cache-busting arg (set via --build-arg BUILD_ID) to force rebuild when needed

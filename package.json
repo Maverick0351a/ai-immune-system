@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
-  "build": "tsup",
+  "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "lint": "eslint .",
     "report-usage": "tsx src/scripts/reportUsage.ts",
