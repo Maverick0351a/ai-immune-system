@@ -8,7 +8,7 @@ COPY schemas ./schemas
 # Cache-busting arg (set via --build-arg BUILD_ID) to force rebuild when needed
 ARG BUILD_ID=dev
 ENV BUILD_ID=${BUILD_ID}
-RUN echo "Building with BUILD_ID=$BUILD_ID" && npm run build
+RUN echo "Building with BUILD_ID=$BUILD_ID" && rm -rf dist && npm run build && echo "--- Builder dist listing ---" && ls -l dist || (echo "No dist dir" && exit 1)
 
 FROM node:20-slim AS runtime
 WORKDIR /app
@@ -16,6 +16,7 @@ ENV NODE_ENV=production
 COPY package.json package-lock.json* pnpm-lock.yaml* .npmrc* ./
 RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
+RUN echo "--- Runtime dist listing after copy ---" && ls -l dist || (echo "No dist dir in runtime" && exit 1)
 # Optional schema file (embedded already) for reference
 COPY src/db/schema.sql ./dist/db/schema.sql
 EXPOSE 8088
