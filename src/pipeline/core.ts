@@ -27,15 +27,26 @@ function pruneUnknown(obj: any, schema: any): any {
     if (schema.items) return obj.map(i => pruneUnknown(i, schema.items));
     return obj;
   }
-  const props = schema.properties && typeof schema.properties === 'object' ? schema.properties : null;
-  if (!props) return obj;
-  const out: any = {};
-  for (const k of Object.keys(obj)) {
-    if (props[k]) {
-      out[k] = pruneUnknown(obj[k], props[k]);
+  const additional = schema.additionalProperties;
+  if (additional === undefined || additional === true) return obj; // do not prune unless explicitly false
+  if (additional === false) {
+    const props = schema.properties && typeof schema.properties === 'object' ? schema.properties : {};
+    const out: any = {};
+    for (const k of Object.keys(obj)) {
+      if (props[k]) out[k] = pruneUnknown(obj[k], props[k]);
     }
+    return out;
   }
-  return out;
+  // additionalProperties is a schema – recurse into allowed extra
+  if (typeof additional === 'object') {
+    const out: any = {};
+    for (const k of Object.keys(obj)) {
+      const subschema = (schema.properties && schema.properties[k]) || additional;
+      out[k] = pruneUnknown(obj[k], subschema);
+    }
+    return out;
+  }
+  return obj;
 }
 
 export async function runPipeline(raw: string|object, schema?: any, options?: Options): Promise<PipelineResult> {

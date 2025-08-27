@@ -39,10 +39,13 @@ app.use((req,res,next) => {
 	let entry = rlMap.get(key);
 	if (!entry || entry.reset < now) { entry = { count:0, reset: now + rlWindowMs }; rlMap.set(key, entry); }
 	entry.count++;
-	if (entry.count > rlMax) {
-		res.setHeader('Retry-After', Math.ceil((entry.reset-now)/1000));
-		return res.status(429).json({ error: 'rate_limited', window_ms: rlWindowMs });
-	}
+		res.setHeader('X-RateLimit-Limit', String(rlMax));
+		res.setHeader('X-RateLimit-Remaining', String(Math.max(0, rlMax - entry.count)));
+		res.setHeader('X-RateLimit-Reset', String(Math.floor(entry.reset/1000)));
+		if (entry.count > rlMax) {
+			res.setHeader('Retry-After', Math.ceil((entry.reset-now)/1000));
+			return res.status(429).json({ error: 'rate_limited', window_ms: rlWindowMs });
+		}
 	next();
 });
 
