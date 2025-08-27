@@ -12,7 +12,8 @@ Turns noisy / malformed / risky JSON into clean, validated, policy‑compliant, 
 <img alt="TypeScript" src="https://img.shields.io/badge/TS-5.x-3178c6?logo=typescript&logoColor=white">
 <img alt="OpenAI" src="https://img.shields.io/badge/LLM-OpenAI-412991?logo=openai&logoColor=white">
 <img alt="Stripe" src="https://img.shields.io/badge/Billing-Stripe-6772e5?logo=stripe&logoColor=white">
-<img alt="CI" src="https://img.shields.io/badge/Tests-Vitest-6DA83B?logo=vite&logoColor=white">
+ <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Maverick0351a/ai-immune-system/ci.yml?label=CI&logo=github">
+ <a href="https://ghcr.io/Maverick0351a/ai-immune-system"><img alt="Docker" src="https://img.shields.io/badge/Container-GHCR-2496ED?logo=docker&logoColor=white"></a>
  <a href="https://github.com/new?template_name=ai-immune-system&template_owner=Maverick0351a"><img alt="Use this template" src="https://img.shields.io/badge/Use_this-Template-2563eb"></a>
  <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=Maverick0351a%2Fai-immune-system"><img alt="Codespaces" src="https://github.com/codespaces/badge.svg" /></a>
  <a href="https://gitpod.io/#https://github.com/Maverick0351a/ai-immune-system"><img alt="Gitpod" src="https://img.shields.io/badge/Gitpod-Ready-FFB45B?logo=gitpod" /></a>
