@@ -21,6 +21,23 @@ export interface PipelineResult {
   cid?: string;
 }
 
+function pruneUnknown(obj: any, schema: any): any {
+  if (!schema || typeof obj !== 'object' || obj === null) return obj;
+  if (Array.isArray(obj)) {
+    if (schema.items) return obj.map(i => pruneUnknown(i, schema.items));
+    return obj;
+  }
+  const props = schema.properties && typeof schema.properties === 'object' ? schema.properties : null;
+  if (!props) return obj;
+  const out: any = {};
+  for (const k of Object.keys(obj)) {
+    if (props[k]) {
+      out[k] = pruneUnknown(obj[k], props[k]);
+    }
+  }
+  return out;
+}
+
 export async function runPipeline(raw: string|object, schema?: any, options?: Options): Promise<PipelineResult> {
   const diagnostics: PipelineResult["diagnostics"] = [];
   const repairs: string[] = [];
@@ -81,7 +98,10 @@ export async function runPipeline(raw: string|object, schema?: any, options?: Op
     diagnostics.push({ step: "schema.revalidate", ok: v2.ok, note: v2.ok ? "valid" : (v2.errors||[]).join("; "), ms: Date.now()-t4 });
     if (!v2.ok) return { ok: false, decision: "QUARANTINE", repairs, diagnostics };
   }
-
+  // Optionally drop unknown properties (post validation so diagnostics reflect original)
+  if (options?.dropUnknown && schema) {
+    try { obj = pruneUnknown(obj, schema); } catch { /* ignore prune errors */ }
+  }
   const final = redact(obj, options?.redactPaths || []);
   const finalCid = cid(final);
   const decision = repairs.length ? "ACCEPT_WITH_REPAIRS" : "ACCEPT";

@@ -28,11 +28,29 @@ app.use(cors({ origin: true }));
 // JSON parser (skip for Stripe webhook raw route)
 app.use(bodyParser.json({ limit: "1mb" }));
 
+// Basic in-memory rate limit (per API key) - adaptive replacement suggested for production
+const rlWindowMs = Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000);
+const rlMax = Number(process.env.RATE_LIMIT_MAX || 300);
+const rlMap = new Map<string,{count:number,reset:number}>();
+app.use((req,res,next) => {
+	const key = String(req.header('X-API-Key')||'');
+	if (!key) return next();
+	const now = Date.now();
+	let entry = rlMap.get(key);
+	if (!entry || entry.reset < now) { entry = { count:0, reset: now + rlWindowMs }; rlMap.set(key, entry); }
+	entry.count++;
+	if (entry.count > rlMax) {
+		res.setHeader('Retry-After', Math.ceil((entry.reset-now)/1000));
+		return res.status(429).json({ error: 'rate_limited', window_ms: rlWindowMs });
+	}
+	next();
+});
+
 const dbUrl = process.env.DATABASE_URL || "file:./data/ais.db";
 const db = openDb(dbUrl);
 initDb(db);
 
-const meter = new UsageMeter(dbUrl.startsWith("file:") ? dbUrl.slice(5) : dbUrl);
+const meter = new UsageMeter(db);
 
 app.get("/healthz", (req, res) => res.json({ ok: true, version: PKG_VERSION }));
 app.get('/metrics', async (req, res) => {

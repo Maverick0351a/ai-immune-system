@@ -16,8 +16,8 @@ export class UsageMeter {
   private db: Database.Database;
   private stripe?: Stripe;
 
-  constructor(dbPath: string) {
-    this.db = new Database(dbPath);
+  constructor(dbOrPath: string | Database.Database) {
+    this.db = typeof dbOrPath === 'string' ? new Database(dbOrPath) : dbOrPath;
     const key = process.env.STRIPE_API_KEY;
     if (key) this.stripe = new Stripe(key, { apiVersion: "2024-06-20" });
   }
