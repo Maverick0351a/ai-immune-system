@@ -23,7 +23,7 @@ export default defineConfig({
   sourcemap: false,
   splitting: false, // avoid chunk wrappers that caused dynamic require issues on Fly
   clean: true,
-  format: ['cjs'], // single CJS output for runtime simplicity
+  format: ['esm'], // ESM output supports top-level await used in server & cli
   dts: false,
   external: [
     'better-sqlite3',
