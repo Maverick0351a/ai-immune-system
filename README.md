@@ -13,6 +13,9 @@ Turns noisy / malformed / risky JSON into clean, validated, policy‑compliant, 
 <img alt="OpenAI" src="https://img.shields.io/badge/LLM-OpenAI-412991?logo=openai&logoColor=white">
 <img alt="Stripe" src="https://img.shields.io/badge/Billing-Stripe-6772e5?logo=stripe&logoColor=white">
 <img alt="CI" src="https://img.shields.io/badge/Tests-Vitest-6DA83B?logo=vite&logoColor=white">
+ <a href="https://github.com/new?template_name=ai-immune-system&template_owner=Maverick0351a"><img alt="Use this template" src="https://img.shields.io/badge/Use_this-Template-2563eb"></a>
+ <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=Maverick0351a%2Fai-immune-system"><img alt="Codespaces" src="https://github.com/codespaces/badge.svg" /></a>
+ <a href="https://gitpod.io/#https://github.com/Maverick0351a/ai-immune-system"><img alt="Gitpod" src="https://img.shields.io/badge/Gitpod-Ready-FFB45B?logo=gitpod" /></a>
 </p>
 
 <p align="center">
@@ -89,6 +92,17 @@ CLI (`ais`), Python client (`pip install ais-client`), simple REST endpoints, mi
 
 ## Try in 60s
 
+### Option A: GitHub Codespaces (One Click)
+Click the Codespaces badge above or this link to launch a pre-configured dev container (installs deps & builds automatically).
+
+When it opens:
+```bash
+npm run dev
+```
+Visit: https://YOUR-CODESPACE-URL-8088.app.github.dev/healthz
+
+### Option B: Clone Locally
+
 ```bash
 git clone https://github.com/Maverick0351a/ai-immune-system.git
 cd ai-immune-system
@@ -102,6 +116,21 @@ npm run dev &
 curl -s http://127.0.0.1:8088/v1/immune/run \
   -H "X-API-Key: demokey-123" -H "Content-Type: application/json" \
   -d '{"schema":{"type":"object","properties":{"amount":{"type":"number"}},"required":["amount"]},"json":"{amount: \"42\"}"}' | jq
+```
+
+### Option C: Docker (No Local Node Needed)
+```bash
+docker run --rm -p 8088:8088 ghcr.io/maverick0351a/ai-immune-system:latest
+```
+Then:
+```bash
+curl -s http://127.0.0.1:8088/healthz
+```
+
+### Option D: Quick Start (degit minimal history)
+```bash
+npx degit Maverick0351a/ai-immune-system my-ais
+cd my-ais && npm i && npm run dev
 ```
 
 Add an OpenAI key in `.env` to enable fallback: `OPENAI_API_KEY=sk-...`
