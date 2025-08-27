@@ -8,7 +8,7 @@ COPY schemas ./schemas
 # Cache-busting arg (set via --build-arg BUILD_ID) to force rebuild when needed
 ARG BUILD_ID=dev
 ENV BUILD_ID=${BUILD_ID}
-RUN echo "Building with BUILD_ID=$BUILD_ID" && rm -rf dist && npm run build && echo "--- Builder dist listing ---" && ls -l dist || (echo "No dist dir" && exit 1)
+RUN echo "Building with BUILD_ID=$BUILD_ID" && rm -rf dist && npm run build
 
 FROM node:20-slim AS runtime
 WORKDIR /app
@@ -16,9 +16,10 @@ ENV NODE_ENV=production
 COPY package.json package-lock.json* pnpm-lock.yaml* .npmrc* ./
 RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
-RUN echo "--- Runtime dist listing after copy ---" && ls -l dist || (echo "No dist dir in runtime" && exit 1)
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x entrypoint.sh
 # Optional schema file (embedded already) for reference
 COPY src/db/schema.sql ./dist/db/schema.sql
 EXPOSE 8088
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD node -e "fetch('http://127.0.0.1:8088/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
-CMD ["node", "dist/server.js"]
+CMD ["./entrypoint.sh"]
